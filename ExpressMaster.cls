@@ -78,20 +78,18 @@ Sub batchQueryExpressInfo()
             actRowIndex = i
             queryDo actRowIndex, winHttp
         Next
-        MsgBox endRow - beginRow & " 条物流记录更新完毕"
+        MsgBox endRow - beginRow + 1 & " 条物流记录更新完毕"
     End If
     
 End Sub
 
 Sub expSheets()
-
     Dim rowCounts As Integer
     Dim expressCompanyNameColNum As Integer
     expressCompanyNameColNum = 2 '快递公司名称列
     
     Set masterSheet = Sheets("Master")
     rowCounts = masterSheet.Cells(2, expressCompanyNameColNum).CurrentRegion.Rows.Count '获取B2所在单元格所在数据块有多少行（含表头）
-    
     
     '统计B列（快递公司列，从B2开始）：B[rowCounts]中不重复数据的个数,下面用了字典对象的key唯一的方法达到统计效果
     Set tempDict = CreateObject("scripting.dictionary")
@@ -105,7 +103,6 @@ Sub expSheets()
         End If
     Next
     
-    
     '这里要考虑当对应快递公司已经存在的情况，示例：如果"顺丰速运"已经存在，则添加新Sheet名称为 "顺丰速运(1)"，依此类推
     Set tempSheetDict = CreateObject("scripting.dictionary")
     
@@ -116,11 +113,9 @@ Sub expSheets()
 
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
-        
 
     '根据 B 列 关键字处理数据开始
     For Each Key In tempDict
-        
         Dim sName As String
         
         If tempSheetDict.Exists(Key) Then
@@ -138,10 +133,8 @@ Sub expSheets()
         Set lastSheet = Sheets(Sheets.Count)
         lastSheet.Name = sName
 
-        
         '复制表头 在外面处理第一行表头数据
         lastSheet.Range("A1:E1").Value = masterSheet.Range("A1:E1").Value
-        
         
         Dim tempRow As Integer
         tempRow = 2 '处理复制新表的行号记录
@@ -149,10 +142,8 @@ Sub expSheets()
         For i = 2 To rowCounts Step 1 '从第二行开始遍历
             If (Key = "无" And masterSheet.Cells(i, expressCompanyNameColNum).Value = "") Or masterSheet.Cells(i, expressCompanyNameColNum).Value = Key Then
                 'Copy数据：
-                
                 lastSheet.Cells(tempRow, 1).NumberFormatLocal = "@"  '快递单号所在列需要设置为文本格式
                 lastSheet.Range("A" & tempRow & ":E" & tempRow).Value = masterSheet.Range("A" & i & ":E" & i).Value
-                
                 tempRow = tempRow + 1
             End If
         Next
@@ -165,11 +156,8 @@ End Sub
 
 
 Sub expFiles()
-
     Dim xPath As String '导出文件的路径
-     
     xPath = Application.ActiveWorkbook.Path '和当前文件同一目录
-    
    
     Dim rowCounts As Integer
     Dim expressCompanyNameColNum As Integer
@@ -177,9 +165,6 @@ Sub expFiles()
     
     Set masterSheet = Sheets("Master")
     rowCounts = masterSheet.Cells(2, expressCompanyNameColNum).CurrentRegion.Rows.Count '获取B2所在单元格所在数据块有多少行（含表头）
-    
-    
-    
     
     '统计B列（快递公司列，从B2开始）：B[rowCounts]中不重复数据的个数,下面用了字典对象的key唯一的方法达到统计效果
     Set tempDict = CreateObject("scripting.dictionary")
@@ -193,36 +178,29 @@ Sub expFiles()
         End If
     Next
     
-    
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
-        
-
+    
     '根据 B 列 关键字处理数据开始
     For Each Key In tempDict
-    
         Set tempXl = New Excel.Application
         Set tempXl = CreateObject("Excel.Application")
         Set tempXlB = tempXl.Workbooks.Add
         Set tempXLBS = tempXlB.Worksheets.Add
         
         tempXLBS.Name = Key
-
         
         '复制表头 在外面处理第一行表头数据
         tempXLBS.Range("A1:E1").Value = masterSheet.Range("A1:E1").Value
-        
-        
+              
         Dim tempRow As Integer
         tempRow = 2 '处理复制新表的行号记录
         
         For i = 2 To rowCounts Step 1 '从第二行开始遍历
             If (Key = "无" And masterSheet.Cells(i, expressCompanyNameColNum).Value = "") Or masterSheet.Cells(i, expressCompanyNameColNum).Value = Key Then
                 'Copy数据：
-                
                 tempXLBS.Cells(tempRow, 1).NumberFormatLocal = "@"  '快递单号所在列需要设置为文本格式
                 tempXLBS.Range("A" & tempRow & ":E" & tempRow).Value = masterSheet.Range("A" & i & ":E" & i).Value
-                
                 tempRow = tempRow + 1
             End If
         Next
