@@ -8,3 +8,9 @@
 借助百度搜索的统一物流查询接口，实现小批量、小并发、整合多个物流公司的统一的物流信息更新功能。
 
 同时借助Excel强大的宏处理能力，实现对物流的分类筛选分组导出到独立Sheet或独立Excel文件的管理功能。对有类似分组分类导出需求的，提供一个小小的参考。
+
+# 功能演示
+![功能演示](https://raw.githubusercontent.com/Tanyc/Baidu-Express-Query-VBA/master/ExpressQueryOnline.gif)
+
+# WPS 启动宏
+WPS默认情况下，“宏”按钮是灰色的，没有启用。可以下载Baidu-Express-Query-VBA/tools目录下的VBA7.0.1590ForWPS.exe安装，开启WPS宏模块功能。
